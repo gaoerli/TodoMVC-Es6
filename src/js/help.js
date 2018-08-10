@@ -5,8 +5,8 @@
   // Get element(s) by CSS selector:通过CSS选择器获取元素
   /**
    * 获取元素
-   * @param {*} selector 选择器：p .class #id
-   * @param {*} scope 范围
+   * @param {String} selector 选择器：p .class #id
+   * @param {Object} scope 范围
    */
   window.qs = function(selector, scope) {
     return (scope || document).querySelector(selector);
@@ -18,10 +18,10 @@
   // addEventListener wrapper:包装监听器
   /**
    * 监听器
-   * @param {*} target 目标
-   * @param {*} type 类型
-   * @param {*} callback 回调函数
-   * @param {*} useCapture 第三个参数
+   * @param {Object} target 目标
+   * @param {String} type 类型
+   * @param {function} callback 回调函数
+   * @param {String} useCapture 第三个参数
    * $(document).on('.target','click',function(){},useCapture)
    */
   window.$on = function(target, type, callback, useCapture) {
@@ -34,7 +34,7 @@
    * 添加事件
    * @param {*} target 目标
    * @param {*} selector 选择器
-   * @param {*} type 类型
+   * @param {String} type 类型
    * @param {*} handler 操作者
    */
   window.$delegate = function(target, selector, type, handler) {
@@ -60,14 +60,14 @@
   /**
    * 使用标记名查找元素的父元素
    * @param {*} element 本元素
-   * @param {*} tagName 标记名
+   * @param {String} tagName 标记名
    */
   window.$parent = function(element, tagName) {
     if (!element.parentNode) {
       return;
     }
     if (element.parentNode.tagName.toLowerCase() === tagName.toLowerCase()) {
-      return element, parentNode;
+      return element.parentNode;
     }
     return window.$parent(element.parentNode, tagName);
   };
