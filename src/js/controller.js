@@ -62,7 +62,7 @@
    */
   Controller.prototype.showAll = function() {
     var self = this;
-    console.log(data);
+    // console.log(data);
     self.model.read(function(data) {
       self.view.render("showEndries", data);
     });
@@ -245,7 +245,8 @@
   Controller.prototype._filter = function(force) {
     var self = this;
     console.log("force :", force);
-    this._activeRoute.substr(1);
+    var activeRoute =
+      this._activeRoute.charAt(0).toUpperCase() + this._activeRoute.substr(1);
 
     this._updateCount();
 

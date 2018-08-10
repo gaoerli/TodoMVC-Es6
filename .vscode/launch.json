@@ -7,7 +7,7 @@
     {
       "type": "chrome",
       "request": "launch",
-      "name": "启动 Chrome 并打开 localhost",
+      "name": "使用本机 Chrome 调试",
       "url": "http://localhost:5500",
       "webRoot": "${workspaceFolder}/dist",
       "skipFiles": ["node_modules"],

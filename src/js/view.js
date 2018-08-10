@@ -219,7 +219,7 @@
    * @param {object} event
    * @param {object} handler 操作对象
    */
-  View.prototype._bind = function(event, handler) {
+  View.prototype.bind = function(event, handler) {
     var self = this;
     console.log(handler);
 

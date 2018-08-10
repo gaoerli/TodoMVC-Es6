@@ -13,11 +13,11 @@
     this.controller = new app.Controller(this.model, this.view);
   }
 
-  var tode = new Todo("gaoel-textdb");
+  var todo = new Todo("gaoel-textdb");
 
   function setView() {
-    return;
-    // todo.controller.setView(document.location.hash);
+    // return;
+    todo.controller.setView(document.location.hash);
   }
 
   $on(window, "load", setView);
