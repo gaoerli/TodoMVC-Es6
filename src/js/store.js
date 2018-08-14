@@ -25,7 +25,7 @@
   }
 
   /**
-   * Finds items based on query given as a JS object 根据给定的项查找
+   * Finds items based on query given as a JS object 根据给定的项查找(返回满足条件的新的数组)
    * @param {object} query the query to match against(i.e.{foo:'bar'})
    * @param {function} callback the callback to fire when the query has
    * completed running
@@ -37,14 +37,14 @@
    */
   Store.prototype.find = function(query, callback) {
     if (!callback) {
-      // 没有回调函数
       return;
     }
+
     var todos = JSON.parse(localStorage.getItem(this._dbName));
 
     callback.call(
       this,
-      todos.filter(function(todos) {
+      todos.filter(function(todo) {
         for (var q in query) {
           if (query[q] !== todo[q]) {
             return false;
@@ -54,7 +54,6 @@
       })
     );
   };
-
   /**
    * 检索客户端所有的数据
    * @param {function} callback 检索数据时候触发的回调函数

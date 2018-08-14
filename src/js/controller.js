@@ -32,7 +32,7 @@
     });
 
     self.view.bind("itemToggle", function(item) {
-      self.toggleComplete(item.it, item.completed);
+      self.toggleComplete(item.id, item.completed);
     });
 
     self.view.bind("removeCompleted", function() {
@@ -46,7 +46,7 @@
 
   /**
    * Loads and initialises the view
-   * 初始化视图
+   * 初始化视图(通过url得到默认选中)
    * @param {string} locationHash  ''|'active'|'completed
    */
   Controller.prototype.setView = function(locationHash) {
@@ -58,18 +58,18 @@
   /**
    * An event to fire on load .Will get all items and display them in the
    * todo-list
-   * 显示所有的项并将显示到列表中
+   * 显示所有的项并将显示到列表中(将model中查到的数据传到view中再调用templete来显示页面)
    */
   Controller.prototype.showAll = function() {
     var self = this;
     // console.log(data);
     self.model.read(function(data) {
-      self.view.render("showEndries", data);
+      self.view.render("showEntries", data);
     });
   };
 
   /**
-   * 显示为完成项目 Render all active tasks
+   * 显示未完成项目 Render all active tasks
    */
   Controller.prototype.showActive = function() {
     var self = this;
@@ -81,7 +81,7 @@
   /**
    * 显示已完成项目 Render all completed tasks
    */
-  Controller.prototype.showACompleted = function() {
+  Controller.prototype.showCompleted = function() {
     var self = this;
     self.model.read({ completed: true }, function(data) {
       self.view.render("showEntries", data);
@@ -188,7 +188,7 @@
    */
   Controller.prototype.toggleComplete = function(id, completed, silent) {
     var self = this;
-    console.log("silent :", silent);
+    // console.log("silent :", silent);
     self.model.update(id, { completed: completed }, function() {
       self.view.render("elementComplete", {
         id: id,
@@ -221,48 +221,68 @@
   /**
    * Updates the pieces of the page which change depending on the remaining
    * number of todos.
+   * 更新各个类型数据数量根据数量显示/隐藏
+   * 选中按钮/footer(main)/清除所有完成按钮
    */
   Controller.prototype._updateCount = function() {
     var self = this;
     self.model.getCount(function(todos) {
+      // 描述信息
       self.view.render("updateElementCount", todos.active);
+
+      // 更新清除全部按钮
       self.view.render("clearCompletedButton", {
         completed: todos.completed,
         visible: todos.completed > 0
       });
 
+      // main/footer显示与隐藏
+      self.view.render("contentBlockVisibility", { visible: todos.total > 0 });
+
+      // 全选按钮显示与隐藏
       self.view.render("toggleAll", {
         checked: todos.completed === todos.total
       });
-      self.view.render("contentBlockVisibility", { visible: todos.total > 0 });
     });
   };
 
   /**
-   * TODO 不太明白的函数
+   * TODO 不太明白的函数(开始处理选中类型的文件)
+   * 调用updateCount返回不同类型项的数据
+   * 显示所有数据到列表中
+   * 初始化当前选中按钮的标志
    * @param {*} force
    */
   Controller.prototype._filter = function(force) {
-    var self = this;
-    console.log("force :", force);
+    // 将选中状态第一字母变成大写
     var activeRoute =
       this._activeRoute.charAt(0).toUpperCase() + this._activeRoute.substr(1);
 
+    // Update the elements on the page, which change with each completed todo
     this._updateCount();
 
+    // If the last active route isn't "All", or we're switching routes, we
+    // re-create the todo item elements, calling:
+    //   this.show[All|Active|Completed]();
+    // 重新渲染列表
     if (
       force ||
-      this._lastActivieRoute !== "All" ||
-      this._lastActivieRoute !== activeRoute
+      this._lastActiveRoute !== "All" ||
+      this._lastActiveRoute !== activeRoute
     ) {
+      debugger;
       this["show" + activeRoute]();
     }
 
-    this._lastActivieRoute = activeRoute;
+    this._lastActiveRoute = activeRoute;
   };
 
+  /**
+   * 初始化为ALL(设置默认筛选)
+   * @param {string} currentPage page
+   */
   Controller.prototype._updateFilterState = function(currentPage) {
-    console.log("currentPage :", currentPage);
+    // console.log("选中currentPage :", currentPage);
     this._activeRoute = currentPage;
 
     if (currentPage == "") {

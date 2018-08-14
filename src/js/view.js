@@ -12,8 +12,10 @@
    */
   function View(template) {
     this.template = template;
+
     this.ENTER_KEY = 13;
     this.ESCAPE_KEY = 27;
+
     this.$todoList = qs(".todo-list"); //项目列表
     this.$todoItemCounter = qs(".todo-count"); //显示项目总数文本
     this.$clearCompleted = qs(".clear-completed"); //清除完成按钮
@@ -86,15 +88,16 @@
       return;
     }
 
-    var input = qs("input.edit", listItem);
-    console.log(input);
-    listItem.removeChild(input);
+    // 添加class
+    listItem.className = listItem.className + " editing";
 
-    listItem.className = listItem.className.replace("editing", "");
+    // 新建节点
+    var input = document.createElement("input");
+    input.className = "edit";
 
-    qsa("label", listItem).forEach(function(label) {
-      label.textContent = title;
-    });
+    listItem.appendChild(input);
+    input.focus();
+    input.value = title;
   };
 
   /**
@@ -163,7 +166,6 @@
         self._editItemDone(parameter.id, parameter.title);
       }
     };
-
     viewCommands[viewCmd]();
   };
 
@@ -221,11 +223,12 @@
    */
   View.prototype.bind = function(event, handler) {
     var self = this;
-    console.log(handler);
+    // console.log(handler);
 
     if (event === "newTodo") {
       $on(self.$newTodo, "change", function() {
         debugger;
+        console.log(self.$newTodo);
         handler(self.$newTodo.value);
       });
     } else if (event === "removeCompleted") {
